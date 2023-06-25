@@ -1,37 +1,34 @@
+from geopy import Nominatim
+
 from database.common.models import History, db
 from database.core import crud
-from site_api.core_current import site_api, url, headers, params
-def to_work():
+from site_api.core_current import site_api, url, headers
+
+
+def to_work(user_id, message: str):
+    def get_name_and_temp(dic: dict, search: str):
+        for i, j in dic.items():
+            if i == search:
+                return j
+            elif isinstance(j, dict) and j.__contains__(search):
+                return get_name_and_temp(j, search)
+
     db_wright = crud.create()
     db_read = crud.retrieve()
 
-    fact_by_number = site_api.get_math_fact()
     curr_weather = site_api.get_curr_weather()
 
-    # response = fact_by_number('GET', url, headers, 5, params, 5)
-    # response = response.json()
-    # data=[{'number':response.get('number'),'message':response.get('text')}]
-
-    # db_wright(db,History,data)
-
+    coords = Nominatim(user_agent='GetLoc')
+    getloc = coords.geocode(message, language='ru')
+    print(getloc.latitude, getloc.longitude)
+    params = {"q": "{0},{1}".format(getloc.latitude, getloc.longitude)}
     response = curr_weather('GET', url, headers, params, timeout=5)
     response = response.json()
-    # print(response)
-    def get_name_and_temp(dic:dict,search:str):
-        for i,j in dic.items():
-            if i==search:
-                return j
-            elif isinstance(j,dict) and j.__contains__(search):
-                return get_name_and_temp(j,search)
 
-    data=[{'place':get_name_and_temp(response,'name'),'message':get_name_and_temp(response,'temp_c')}]
+    data = [{"user_id": user_id, "place": message, 'temp': get_name_and_temp(response, 'temp_c')}]
+    db_wright(db, History, data)
 
-    db_wright(db,History,data)
-
-    retrieved=db_read(db,History,History.place,History.message)
+    retrieved = db_read(db, History, History.user_id, History.place, History.temp)
 
     for elem in retrieved:
-        print(elem.place,elem.message)
-
-if __name__=='__main__':
-    to_work()
+        print(elem.user_id, elem.place, elem.temp)
