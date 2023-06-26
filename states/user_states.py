@@ -7,3 +7,4 @@ class UserInfoState(StatesGroup):
     city_high = State()
     get_date_low = State()
     get_date_high = State()
+    history=State()
