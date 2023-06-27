@@ -25,8 +25,8 @@ def get_date_and_result_low(message:Message)->None:
     bot.send_message(message.from_user.id,'Сейчас будет исполнено')
     with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         to_work(message.from_user.id,data['city'],message.text,'low')
-        temp = db.execute("SELECT temp FROM history WHERE `user_id` = ? AND `place`= ? ORDER BY `id` DESC LIMIT 1", params=(
-            message.from_user.id,data['city'],
+        temp = db.execute_sql("SELECT temp FROM history WHERE user_id = ? AND place = ? ORDER BY id DESC LIMIT 1", (
+            str(message.from_user.id),str(data['city'])
     ))
     print(temp)
     for i in temp:

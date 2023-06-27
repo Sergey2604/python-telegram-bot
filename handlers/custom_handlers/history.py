@@ -14,6 +14,6 @@ def user_history(message:Message)->None:
     for i in history_create:
         for j in history_city:
             for k in history_temp:
-                answer=*i,*j,*k
+                answer=str(i+j+k)
                 print(answer)
-                bot.send_message(message.chat.id,text=answer)
+                bot.send_message(message.from_user.id,text=answer)
