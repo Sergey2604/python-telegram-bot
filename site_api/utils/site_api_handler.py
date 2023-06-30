@@ -39,7 +39,7 @@ class SiteApiInterface:
         return _get_current_weather
 
     @staticmethod
-    def get_math_fact():
+    def get_history_weather():
         return _get_history_weather
 
 

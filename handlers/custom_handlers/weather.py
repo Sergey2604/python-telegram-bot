@@ -3,11 +3,9 @@ from telebot.types import Message
 from database.common.models import db
 from loader import bot
 from states.user_states import UserInfoState
-from work_without_telegram import to_work
+from work_current import to_work
 
 
-# def get_temp_from_database(user:int):
-#     get_temp=db.execute_sql("SELECT `message` FROM `history` WHERE `id`=(MAX(`id`)) AND `user_id`=user")
 @bot.message_handler(commands=["weather"])
 def weather(message: Message) -> None:
     bot.set_state(message.from_user.id, UserInfoState.city, message.chat.id)
@@ -16,9 +14,9 @@ def weather(message: Message) -> None:
 
 @bot.message_handler(state=UserInfoState.city)
 def get_city_and_temp(message: Message) -> None:
-    if message.text.isalpha():
+    if message.text.isalpha() or message.text.__contains__(' '):
         bot.send_message(message.chat.id, 'Сейчас будет исполнено')
-        bot.set_state(message.from_user.id, UserInfoState.form_weather, message.chat.id)
+        bot.set_state(message.from_user.id, UserInfoState.get_date_low, message.chat.id)
         to_work(message.from_user.id, message.text)
         temp = db.execute_sql("SELECT `temp` FROM history WHERE `user_id` = ? AND place=? ORDER BY id DESC LIMIT 1", (
             message.from_user.id, message.text
