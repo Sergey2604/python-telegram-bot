@@ -1,8 +1,7 @@
 from datetime import datetime
-
 import peewee as pw
 
-db = pw.SqliteDatabase('first.db')
+db = pw.SqliteDatabase(r'C:\Обучение\Skillbox\Python\диплом\python_basic_diploma\first.db')
 
 
 class ModelBase(pw.Model):
@@ -13,6 +12,6 @@ class ModelBase(pw.Model):
 
 
 class History(ModelBase):
-    user_id = pw.IntegerField()
+    user_id = pw.TextField()
     place = pw.TextField()
     temp = pw.TextField()

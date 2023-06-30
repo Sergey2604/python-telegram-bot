@@ -19,7 +19,7 @@ def to_work(user_id, message: str,date:str,format:str='low'):
     response = response.json()
     data=None
     if format=='low':
-        data = [{"created_at":date,"user_id": user_id, "place": message, 'temp': get_temp(response, 'mintemp_c')}]
+        data = [{"created_at":date,"user_id": str(user_id), "place": message, 'temp': get_temp(response, 'mintemp_c')}]
     elif format=='high':
         data = [{"created_at": date, "user_id": user_id, "place": message, 'temp': get_temp(response, 'maxtemp_c')}]
     db_wright(db, History, data)
